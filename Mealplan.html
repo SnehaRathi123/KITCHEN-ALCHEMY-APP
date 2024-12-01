@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meal Plan</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f8f8;
+        }
+
+        header {
+            background-color: #4caf50;
+            color: white;
+            padding: 1em;
+            text-align: center;
+        }
+
+        main {
+            padding: 20px;
+        }
+
+        h1, h2 {
+            margin: 0;
+            color: #333;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table th, table td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: center;
+        }
+
+        table th {
+            background-color: #f0f0f0;
+        }
+
+        form {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        form label {
+            font-weight: bold;
+        }
+
+        form input, form select, form button {
+            padding: 10px;
+            font-size: 1em;
+        }
+
+        form button {
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        form button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Weekly Meal Plan</h1>
+    </header>
+    <main>
+        <section id="meal-plan">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Day</th>
+                        <th>Breakfast</th>
+                        <th>Lunch</th>
+                        <th>Dinner</th>
+                    </tr>
+                </thead>
+                <tbody id="meal-table">
+                    <!-- Rows will be generated dynamically -->
+                </tbody>
+            </table>
+        </section>
+        <section id="add-meal">
+            <h2>Add a Meal</h2>
+            <form id="meal-form">
+                <label for="day">Day:</label>
+                <select id="day" name="day" required>
+                    <option value="">Select Day</option>
+                    <option value="Monday">Monday</option>
+                    <option value="Tuesday">Tuesday</option>
+                    <option value="Wednesday">Wednesday</option>
+                    <option value="Thursday">Thursday</option>
+                    <option value="Friday">Friday</option>
+                    <option value="Saturday">Saturday</option>
+                    <option value="Sunday">Sunday</option>
+                </select>
+                <label for="meal-type">Meal Type:</label>
+                <select id="meal-type" name="meal-type" required>
+                    <option value="">Select Meal Type</option>
+                    <option value="Breakfast">Breakfast</option>
+                    <option value="Lunch">Lunch</option>
+                    <option value="Dinner">Dinner</option>
+                </select>
+                <label for="recipe">Recipe:</label>
+                <select id="recipe" name="recipe" required>
+                 <option value="">Select Meal Type</option>
+
+                    <!-- Recipes will be dynamically populated -->
+                </select>
+                <button type="submit">Add Meal</button>
+            </form>
+        </section>
+    </main>
+    <script>
+        const recipes = [
+            { label: "Spaghetti Carbonara", type: "nonveg" },
+            { label: "Chicken Alfredo", type: "nonveg" },
+            { label: "Vegetarian Stir-Fry with Tofu", type: "veg" },
+            { label: "Beef Stroganoff", type: "nonveg" },
+            { label: "Butter Chicken", type: "nonveg" },
+            { label: "Chickpea and Spinach Curry", type: "veg" },
+            { label: "Grilled Fish Tacos", type: "nonveg" },
+            { label: "Paneer Butter Masala", type: "veg" },
+            { label: "BBQ Pulled Pork", type: "nonveg" },
+            { label: "Vegetable Lasagna", type: "veg" },
+            { label: "Eggplant Parmesan", type: "veg" },
+            { label: "Vegetable Biryani", type: "veg" },
+            { label: "Shrimp Scampi", type: "nonveg" },
+            { label: "Lamb Rogan Josh", type: "nonveg" },
+        ];
+
+        const recipeSelect = document.getElementById('recipe');
+        const mealTable = document.getElementById('meal-table');
+        const mealForm = document.getElementById('meal-form');
+
+        // Populate the recipe dropdown
+        recipes.forEach(recipe => {
+            const option = document.createElement('option');
+            option.value = recipe.label;
+            option.textContent = recipe.label;
+            recipeSelect.appendChild(option);
+        });
+
+        mealForm.addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            const day = document.getElementById('day').value;
+            const mealType = document.getElementById('meal-type').value;
+            const recipeName = document.getElementById('recipe').value;
+
+            if (day && mealType && recipeName) {
+                // Add the meal to the table
+                const existingRow = Array.from(mealTable.rows).find(row => row.cells[0].innerText === day);
+
+                if (existingRow) {
+                    const mealIndex = mealType === 'Breakfast' ? 1 : mealType === 'Lunch' ? 2 : 3;
+                    existingRow.cells[mealIndex].innerText = recipeName;
+                } else {
+                    const row = mealTable.insertRow();
+                    const dayCell = row.insertCell(0);
+                    dayCell.innerText = day;
+
+                    const breakfastCell = row.insertCell(1);
+                    breakfastCell.innerText = mealType === 'Breakfast' ? recipeName : '';
+
+                    const lunchCell = row.insertCell(2);
+                    lunchCell.innerText = mealType === 'Lunch' ? recipeName : '';
+
+                    const dinnerCell = row.insertCell(3);
+                    dinnerCell.innerText = mealType === 'Dinner' ? recipeName : '';
+                }
+
+                // Reset the form
+                mealForm.reset();
+            }
+        });
+    </script>
+</body>
+</html>
